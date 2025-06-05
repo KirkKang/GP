@@ -1,0 +1,105 @@
+import React from 'react'
+import { FaStar } from 'react-icons/fa'
+import { addToCart } from '../redux/cartSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import axios from "../../src/axios"
+
+
+
+const ProductCard = ({product}) => {
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+    const dispatch = useDispatch()
+    const cartItems = useSelector(state => state.cart.products);
+
+    if (product.Shelf_status === "0") {
+        return null; // 如果 Shelf_status 是 "0"，则不显示该产品卡片
+    }
+
+    const displayProduct = {
+    ...product,
+    Shelf_status: (product.quantity === 0 && product.Shelf_status !== 0) ? 2 : product.Shelf_status
+    };
+
+    const handleAddToCart = (e,product) => {
+        e.stopPropagation()
+        e.preventDefault()
+
+        const cartItem = cartItems.find(item => item.id === product.id);
+        const cartQuantity = cartItem ? cartItem.quantity : 0 ;
+
+        if (cartQuantity >= product.quantity) {
+            alert("加入失敗：已超過庫存數量！");
+        return;
+    }
+
+        dispatch(addToCart(product))
+        alert("商品加入成功")
+
+        if(isAuthenticated){
+           const productForCart = {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1,
+            Seller_ID: product.Seller_ID,
+            Sell_quantity:product.Sell_quantity,
+        };
+
+        axios.post('api/add-cart',{product: productForCart},{withCredentials:true})
+        .then(res=>{
+            if(res.data.Status ==="成功"){
+                console.log("購物車更新成功",res.data);
+              }
+            else{
+              alert(res.data.Error ||"新增購物車失敗");
+              console.log("回傳錯誤:",res.data);
+            }
+              })
+            .catch(err=>{
+              console.error("伺服器問題，更新購物車失敗",err);
+              if(err.response){
+                console.log("後端回應錯誤:",err.response.data);
+              }
+            })
+          }
+          }
+  return (
+    <Link to={`/product/${displayProduct.id}`}>
+    <div className='bg-white p-4 shadow rounded relative border
+                transform transition-transform duration-300 hover:scale-105'>
+      <img src={displayProduct.image} alt="" className='w-full h-48 object-contain mb-4'/>
+      <h3 className='text-lg font-semibold'>{displayProduct.name}</h3>
+      <p className='text-gray-500'>${displayProduct.price}</p>
+      {/* <div className='flex items-center mt-2'>
+        <FaStar className='text-yellow-500' />
+        <FaStar className='text-yellow-500' />
+        <FaStar className='text-yellow-500' />
+        <FaStar className='text-yellow-500' />
+      </div> */}
+      <div className={`absolute bottom-4 right-2 flex items-center justify-center w-8 h-8 
+                      ${displayProduct.Shelf_status === 2 ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'} 
+                    group text-white text-sm rounded-full transition-all duration-100
+                     ${displayProduct.Shelf_status !==2 && 'hover:w-32'}`}
+                    onClick={(e)=>{
+                        if(displayProduct.Shelf_status !==2){
+                          handleAddToCart(e, displayProduct)
+                        }
+                    }}
+                    >
+                      {displayProduct.Shelf_status ===2 ?(
+                        <span className='text-xs px-2'>缺貨</span>
+                      ):(
+                        <>
+                            <span className='group-hover:hidden'>+</span>
+                            <span className='hidden group-hover:block'>加入購物車</span>
+                        </>
+                      )}
+      </div>
+    </div>
+    </Link>
+  )
+}
+
+export default ProductCard
