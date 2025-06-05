@@ -78,6 +78,7 @@ const Navbar = () => {
             withCredentials:true
         })
         .then(res => {
+            dispatch(clearAuth());
             dispatch(clearCart());
             setShowUser(false);
             navigate('/');
