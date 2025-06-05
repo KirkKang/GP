@@ -63,7 +63,7 @@ console.log("App 檢查 auth 狀態：", authState);
   
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/GP">
     <Navbar/>
       <Routes>
         <Route path="/" element={<Home/>}></Route>
