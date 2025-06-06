@@ -72,13 +72,13 @@ const Login = ({openSignUp,setIsModelOpen}) => {
                     onChange={e => setValues({...values,password: e.target.value})}
                 />
             </div>
-            <div className='mb-4 flex items-center justify-between'>
+            {/* <div className='mb-4 flex items-center justify-between'>
                 <label className='inline-flex items-center'>
                     <input type='checkbox' className='form-checkbox'></input>
                     <span className='ml-2 text-gray-700'>記住我</span>
                 </label>
                     <a href='#' className='text-red-800'>忘記密碼?</a>
-            </div>
+            </div> */}
             <div className='mb-4'>
                 <button type='submit' className='w-full bg-red-600 text-white py-2'>登入</button>
             </div>
