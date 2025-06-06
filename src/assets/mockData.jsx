@@ -1,13 +1,13 @@
-import Image1 from "./images/apple.png"
-import Image2 from "./images/banana.png"
-import Image3 from "./images/coconut.png"
-import Image4 from "./images/lemon.png"
-import Image5 from "./images/mango.png"
-import Image6 from "./images/orange.png"
-import Image7 from "./images/papaya.png"
-import Image8 from "./images/peach.png"
-import Image9 from "./images/pineapple.png"
-import Image10 from "./images/tomato.png"
+// import Image1 from "./images/apple.png"
+// import Image2 from "./images/banana.png"
+// import Image3 from "./images/coconut.png"
+// import Image4 from "./images/lemon.png"
+// import Image5 from "./images/mango.png"
+// import Image6 from "./images/orange.png"
+// import Image7 from "./images/papaya.png"
+// import Image8 from "./images/peach.png"
+// import Image9 from "./images/pineapple.png"
+// import Image10 from "./images/tomato.png"
 
 export const Categories =[
     "3C",
