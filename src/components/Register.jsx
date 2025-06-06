@@ -13,6 +13,7 @@ const Register = ({openLogin}) => {
     .then(res => {
       console.log("成功", res);
       alert("註冊成功");
+      onClick={openLogin};
     })
     .catch(err => {
       console.log("fail", err);
