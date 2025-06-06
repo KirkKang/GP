@@ -152,12 +152,12 @@ const Navbar = () => {
             <Link to='/shop' className='hover:underline'>
                 商品
             </Link>
-            <Link to='/contact' className='hover:underline'>
+            {/* <Link to='/contact' className='hover:underline'>
                 聯繫
             </Link>
             <Link to='/abouts' className='hover:underline'>
                 關於
-            </Link>
+            </Link> */}
         </div>
         <Modal isModelOpen={isModelOpen} setIsModelOpen={setIsModelOpen}>
             {isLogin ? <Login openSignUp={openSignUp}  setIsModelOpen={setIsModelOpen}/> : <Register openLogin={openLogin} /> }
