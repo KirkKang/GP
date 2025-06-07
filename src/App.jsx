@@ -21,6 +21,8 @@ import Contact from "./pages/Contact"
 import Abouts from "./pages/Abouts"
 import axios from "./axios"
 import SellerData from "./pages/SellerData"
+import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
 
 // import ProductList from "./ProductList"
 function App() {
