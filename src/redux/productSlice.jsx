@@ -4,6 +4,7 @@ const initialState ={
     products:[],
     searchTerm: '',
     filteredData: [],
+    sellerProducts: [],
 }
 
 const productSlice = createSlice({
@@ -18,11 +19,17 @@ const productSlice = createSlice({
             state.filteredData = state.products.filter(product =>
                 product.name.toLowerCase().includes(state.searchTerm.toLowerCase())
             )
+        },
+        setSellerProducts(state, action){
+            const sellerId = action.payload
+            state.sellerProducts = state.products.filter(product=>
+                product.Seller_ID === sellerId
+            )
         }
         
     },
         
 })
 
-export const {setProducts,setSearchTerm} = productSlice.actions;
+export const {setProducts,setSearchTerm,setSellerProducts} = productSlice.actions;
 export default productSlice.reducer

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaCarSide, FaQuestion } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { addMultipleToCart } from '../redux/cartSlice'
 import axios from "../../src/axios"
 
@@ -82,10 +82,13 @@ const ProductDetail = () => {
                     <input id="quantity" type='number' min='1' max={product.quantity} value={quantity} onChange={(e)=> setQuantity(e.target.value)} className='border p-1 w-16' disabled={isDisabled} />
                     <button type="submit" className='bg-red-600 text-white py-1.5 px-4 hover:bg-red-800' disabled={isDisabled}>{isDisabled? '缺貨' :'加入購物車'}</button>
                 </form>
-                {/* <div className='flex flex-col gap-y-4 mt-4'>
-                    <p className='flex items-center'><FaCarSide className='mr-1'/>送貨&退貨</p>
-                    <p className='flex items-center'><FaQuestion className='mr-1'/>有問題</p>
-                </div> */}
+                <div className='flex flex-col gap-y-4 mt-4'>
+                    {/* <p className='flex items-center'><FaCarSide className='mr-1'/>送貨&退貨</p>
+                    <p className='flex items-center'><FaQuestion className='mr-1'/>有問題</p> */}
+                    <Link to={`/seller/${product.Seller_ID}`} className='text-blue-600 hover:underline'>
+                    查看此賣家其他商品
+                    </Link>
+                </div>
             </div>
         </div>
         <div className='mt-8'>
