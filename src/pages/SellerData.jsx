@@ -18,7 +18,7 @@ const SellerData = () => {
             {sellerProducts.length > 0 ? <>
                 <h2 className='text-2xl font-bold mb-6 text-center'>此賣家的其他商品</h2>
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 cursor-pointer'>
-                    {sellerProducts.filter(product => product.Shelf_status !== "0")
+                    {sellerProducts.filter(product => product.Shelf_status !== 0)
                     .map(product => (
                         <ProductCard key={product.id} product={product} />
                     ))}
