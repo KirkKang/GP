@@ -11,16 +11,22 @@ const Modal = ({ isModelOpen, setIsModelOpen, children }) => {
           bg-white 
           rounded-lg 
           shadow-lg 
-          max-w-md   /* 最大寬度 md = 28rem */
-          w-full     /* 寬度撐滿可用空間 */
-          mx-4      /* 左右外距，避免貼邊 */
+          w-full 
+          max-w-xs        /* 手機最大寬度 20rem (320px) */
+          sm:max-w-md     /* 小平板以上 28rem (448px) */
+          md:max-w-4xl    /* 中螢幕以上 56rem (896px) */
+          px-4            /* 手機左右 padding */
+          sm:px-6         /* 小平板 padding */
+          md:px-16        /* 桌面寬內距 */
           py-6 
           max-h-[90vh] 
           overflow-y-auto
+          mx-4            /* 手機左右 margin，避免貼邊 */
+          md:mx-auto      /* 桌面置中 */
         "
       >
         <button
-          className="absolute top-2 right-4 text-gray-500 text-3xl"
+          className="absolute top-4 right-4 text-gray-300 text-3xl"
           onClick={() => setIsModelOpen(false)}
         >
           &times;
@@ -31,4 +37,4 @@ const Modal = ({ isModelOpen, setIsModelOpen, children }) => {
   );
 };
 
-export default Modal
+export default Modal;
