@@ -20,7 +20,7 @@ const ResetPassword = () => {
         email,
         code,
         newPassword,
-      })
+      },{ withCredentials: true })
       if (res.data.Status === '成功') {
         setMessage('密碼已成功重設，請重新登入')
         // 2秒後自動跳轉登入頁
