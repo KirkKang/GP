@@ -17,15 +17,13 @@ const productSlice = createSlice({
         setSearchTerm(state,action){
             state.searchTerm = action.payload
             state.filteredData = state.products.filter(product =>
-                product.name.toLowerCase().includes(state.searchTerm.toLowerCase()) &&
-                product.Shelf_status !== "0"
+                product.name.toLowerCase().includes(state.searchTerm.toLowerCase()) 
             )
         },
         setSellerProducts(state, action){
             const sellerId = action.payload
             state.sellerProducts = state.products.filter(product=>
-                product.Seller_ID === sellerId &&
-                product.Shelf_status !== "0"
+                product.Seller_ID === sellerId 
             )
         }
         
