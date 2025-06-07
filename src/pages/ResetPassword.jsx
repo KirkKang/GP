@@ -8,12 +8,14 @@ const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [codeError, setCodeError] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setMessage('')
     setError('')
+    setCodeError(false)
 
     try {
       const res = await axios.post('/api/reset-password', {
@@ -21,7 +23,7 @@ const ResetPassword = () => {
         code,
         newPassword,
       },{ withCredentials: true })
-      if (res.data.Status === '成功') {
+      if (res.data.Status === '密碼已重設成功') {
         setMessage('密碼已成功重設，請重新登入')
         // 2秒後自動跳轉登入頁
         setTimeout(() => {
@@ -29,9 +31,19 @@ const ResetPassword = () => {
         }, 2000)
       } else {
         setError(res.data.Error || '重設密碼失敗')
+        if (res.data.Error === '驗證碼錯誤') {
+          setCodeError(true)
+        }
       }
     } catch (err) {
-      setError('伺服器錯誤，請稍後再試')
+      if (err.response?.data?.Error) {
+        setError(err.response.data.Error)
+        if (err.response.data.Error === '驗證碼錯誤') {
+          setCodeError(true)
+        }
+      } else {
+        setError('伺服器錯誤，請稍後再試')
+      }
     }
   }
 
