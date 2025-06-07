@@ -20,6 +20,8 @@ import UserOrderInformation from "./pages/UserOrderInformation"
 import Contact from "./pages/Contact"
 import Abouts from "./pages/Abouts"
 import axios from "./axios"
+import SellerData from "./pages/SellerData"
+
 // import ProductList from "./ProductList"
 function App() {
   const authState = useSelector(state => state.auth);
