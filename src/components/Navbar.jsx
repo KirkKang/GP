@@ -139,9 +139,50 @@ const Navbar = () => {
                     }                   
               </div>
             )}
-                <button className='block md:hidden'>
-                    <FaUser/>
-                </button>   
+                { !isAuthenticated ? (
+  <button className='block md:hidden' onClick={() => setIsModelOpen(true)}>
+    <FaUser className="inline mr-1" />
+    註冊 | 登入
+  </button>
+) : (
+  <div className="relative block md:hidden" ref={dropShowUserRef}>
+    <button onClick={() => setShowUser(prev => !prev)} className="text-lg">
+      <FaUser />
+    </button>
+    {showUser && (
+      <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-md p-3 z-50 text-sm space-y-2">
+        <p className="text-gray-700 border-b pb-2">{user.name + "會員"}</p>
+        <button
+          onClick={() => {
+            setShowUser(false);
+            navigate('/userinfo');
+          }}
+          className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
+        >
+          用戶資料
+        </button>
+        <button
+          onClick={() => {
+            setShowUser(false);
+            navigate('/userorderinfo');
+          }}
+          className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
+        >
+          訂單資訊
+        </button>
+        <button
+          onClick={() => {
+            setShowUser(false);
+            handleLogout();
+          }}
+          className="w-full text-left text-red-500 hover:bg-gray-100 px-2 py-1 rounded"
+        >
+          登出
+        </button>
+      </div>
+    )}
+  </div>
+)}
 
             </div>
         </div>
