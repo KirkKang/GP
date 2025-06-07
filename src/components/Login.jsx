@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { setAuth } from '../redux/authSlice'
 import {  replaceCart } from '../redux/cartSlice'
+
 const Login = ({openSignUp,setIsModelOpen}) => {
     const cart = useSelector(state => state.cart);
     const navigate = useNavigate()
@@ -12,6 +13,12 @@ const Login = ({openSignUp,setIsModelOpen}) => {
         email:'',
         password:''
     })
+
+     const handleForgotPasswordClick = (e) => {
+    e.preventDefault();
+    setIsModelOpen(false);   // 關掉登入 Modal
+    navigate('/forgot-password');  // 跳轉忘記密碼頁面
+  }
 
     axios.defaults.withCredentials = true;
     const handleSubmit = (e) => {
@@ -72,13 +79,16 @@ const Login = ({openSignUp,setIsModelOpen}) => {
                     onChange={e => setValues({...values,password: e.target.value})}
                 />
             </div>
-            {/* <div className='mb-4 flex items-center justify-between'>
-                <label className='inline-flex items-center'>
+            <div className='mb-4 flex items-center justify-between'>
+                {/* <label className='inline-flex items-center'>
                     <input type='checkbox' className='form-checkbox'></input>
                     <span className='ml-2 text-gray-700'>記住我</span>
-                </label>
-                    <a href='#' className='text-red-800'>忘記密碼?</a>
-            </div> */}
+                </label> */}
+                    <a href='#' className='text-red-800 cursor-pointer' onClick={handleForgotPasswordClick}
+                    >
+                        忘記密碼?
+                    </a>
+            </div>
             <div className='mb-4'>
                 <button type='submit' className='w-full bg-red-600 text-white py-2'>登入</button>
             </div>

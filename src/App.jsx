@@ -85,7 +85,8 @@ console.log("App 檢查 auth 狀態：", authState);
         <Route path="/product/:id" element={<ProductDetail/>}></Route>
         <Route path="/seller/:id" element={<SellerData />} />
 
-        
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         {/* <Route path="/products" element={<ProductList />} /> */}
       </Routes>
     
