@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import ProductCard from '../components/ProductCard'
 import { setSellerProducts } from '../store/productSlice'
 import NoProduct from '../assets/Images/noproduct.png'
-
+import { setSellerProducts } from '../redux/productSlice'
 const SellerData = () => {
     const { id } = useParams(); // Seller_ID
     const dispatch = useDispatch();
