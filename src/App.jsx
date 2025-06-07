@@ -23,7 +23,7 @@ import axios from "./axios"
 import SellerData from "./pages/SellerData"
 import ForgotPassword from "./pages/ForgotPassword"
 import ResetPassword from "./pages/ResetPassword"
-
+import ResetPass from "./pages/ResetPass"
 // import ProductList from "./ProductList"
 function App() {
   const authState = useSelector(state => state.auth);
@@ -89,6 +89,8 @@ console.log("App 檢查 auth 狀態：", authState);
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-pass" element={<ResetPass />} />
+
         {/* <Route path="/products" element={<ProductList />} /> */}
       </Routes>
     

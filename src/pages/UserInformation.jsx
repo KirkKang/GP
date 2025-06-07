@@ -31,8 +31,8 @@ const UserInformation = () => {
       .catch(() => alert('更新失敗，請稍後再試'));
   };
 
-  const handleResetPassword = () => {
-  navigate('/reset-password', { state: { email: userData.email } });  };
+  const handleResetPass = () => {
+  navigate('/reset-pass', { state: { email: userData.email } });  };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-md mt-10 rounded">
@@ -82,7 +82,7 @@ const UserInformation = () => {
           </button>
           <button
             type="button"
-            onClick={handleResetPassword}
+            onClick={handleResetPass}
             className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
           >
             更改密碼
