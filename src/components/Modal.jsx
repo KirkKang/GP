@@ -1,3 +1,5 @@
+import React from 'react'
+
 const Modal = ({ isModelOpen, setIsModelOpen, children }) => {
   if (!isModelOpen) return null;
 
@@ -15,3 +17,6 @@ const Modal = ({ isModelOpen, setIsModelOpen, children }) => {
     </div>
   );
 };
+
+
+export default Modal
