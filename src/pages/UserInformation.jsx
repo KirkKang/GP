@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from "../../src/axios"
+import { useNavigate } from 'react-router-dom';
 
 const UserInformation = () => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     name: '',
     email: '',
@@ -24,10 +26,13 @@ const UserInformation = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/api/updateuserinfo', userData, { withCredentials: true })
+    axios.post('api/updateuserinfo', userData, { withCredentials: true })
       .then(() => alert('已更新用戶資料！'))
       .catch(() => alert('更新失敗，請稍後再試'));
   };
+
+  const handleResetPassword = () => {
+  navigate('/reset-password', { state: { email: userData.email } });  };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-md mt-10 rounded">
@@ -68,12 +73,21 @@ const UserInformation = () => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          更新資料
-        </button>
+        <div className="flex gap-4 mt-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            更新資料
+          </button>
+          <button
+            type="button"
+            onClick={handleResetPassword}
+            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+          >
+            更改密碼
+          </button>
+        </div>
       </form>
     </div>
   );
