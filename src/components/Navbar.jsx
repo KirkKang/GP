@@ -88,7 +88,7 @@ const Navbar = () => {
     const products = useSelector(state => state.cart.products)
 
   return (
-    <nav className='bg-orange-400 shadow-md'>
+    <nav className='bg-orange-700 shadow-md'>
         <div className='container mx-auto px-4 md:px-16 lg:px-24 py-4 flex justify-between items-center'>
             <div className='text-lg font-bold'>
                 <Link to="/" >二手販賣網站</Link>
