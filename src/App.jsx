@@ -24,6 +24,10 @@ import SellerData from "./pages/SellerData"
 import ForgotPassword from "./pages/ForgotPassword"
 import ResetPassword from "./pages/ResetPassword"
 import ResetPass from "./pages/ResetPass"
+import { Elements } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
+
+const stripePromise = loadStripe('pk_test_51QzMQsFRi4bYyS5cJxEvSDLjiZ6mf3G1kqklJtsvmH70l50xa4MUWIpSXkAyb5648II04DNuo1DKfXJNN8b3TR2j00eyx9SjyQ');
 // import ProductList from "./ProductList"
 function App() {
 const authState = useSelector(state => state.auth);
@@ -113,7 +117,11 @@ useEffect(() => {
         <Route path="/abouts" element={<Abouts/>}></Route>
         
         <Route element={<RequireAuth />}>
-        <Route path="/checkout" element={<Checkout setOrder={setOrder}/>}></Route>
+        <Route path="/checkout" element=
+          {<Elements stripe={stripePromise}> 
+          <Checkout setOrder={setOrder}/>
+          </Elements>}>
+        </Route>
         <Route path="/order-confirmation" element={<Order order={order}/>}></Route>
         <Route path="/userinfo" element={<UserInformation/>}></Route>
         <Route path="/userorderinfo" element={<UserOrderInformation/>}></Route>

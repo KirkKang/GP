@@ -5,8 +5,26 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { clearCart } from '../redux/cartSlice'
 import { setOrder1 } from '../redux/orderSlice'
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js"
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      fontSize: '16px',
+      color: '#424770',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+    },
+    invalid: {
+      color: '#9e2146',
+    },
+  },
+};
+
 
 const Checkout = ({setOrder}) => {
+    const stripe = useStripe();
+    const elements = useElements();
     const dispatch = useDispatch()
 
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,6 +32,7 @@ const Checkout = ({setOrder}) => {
     const [billingToggle, setBillingToggle] = useState(true)
     const [shippingToggle, setShippingToggle] = useState(false)
     const [paymentToggle, setPaymentToggle] = useState(false)
+    const [error, setError] = useState({});
 
     const [paymentMethod, setPaymentMethod] = useState("cc")
 
@@ -29,44 +48,11 @@ const Checkout = ({setOrder}) => {
         zip:''
     })
 
-    const [creditCard, setCreditCard] = useState({
-        number: "",
-        name: "",
-        expiry: "",
-        cvv: "",
-    });
-
-    const [creditCardError, setCreditCardError] = useState({});
-
-    const handleCardNumberChange = (e) => {
-        let value = e.target.value.replace(/\D/g, ''); // 移除非數字字元
-        value = value.substring(0, 16); // 最多16碼
-        // 每4碼加一個空格
-        const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
-        setCreditCard({...creditCard, number: formattedValue});
-    };
-
-
-    const handleExpiryChange = (e) => {
-        let value = e.target.value.replace(/\D/g, ''); // 移除非數字字元
-        if (value.length > 4) value = value.substring(0,4); // 最多4碼 MMYY
-
-        if (value.length > 2) {
-            value = value.substring(0, 2) + '/' + value.substring(2);
-        }
-        setCreditCard({...creditCard, expiry: value});
-    };
-
-
-    const [error, setError] = useState({});
-
     const cart = useSelector(state => state.cart)
     const auth = useSelector(state => state.auth)
     const allProducts = useSelector(state => state.product.products);
     
     const navigate = useNavigate()
-
-
 
     useEffect(()=>{
          console.log('auth data:', auth);
@@ -83,49 +69,42 @@ const Checkout = ({setOrder}) => {
         }
     },[auth])
 
-    const validateForm = () => {
-        let errs ={}
+    
+        const validate = () => {
+        const newError = {};
+        if (!billingInfo.name) newError.name = "請輸入名字";
+        if (!billingInfo.email) newError.email = "請輸入信箱";
+        if (!billingInfo.phone) newError.phone = "請輸入電話";
+        if (!shippingInfo.address) newError.address = "請輸入地址";
+        if (!shippingInfo.zip) newError.zip = "請輸入郵遞區號";
+        setError(newError);
+        return Object.keys(newError).length === 0;
+        };
 
-        if(!billingInfo.name.trim()) errs.name = "請輸入姓名"
-        if(!billingInfo.email.trim()) errs.email = "請輸入信箱"
-        if(!billingInfo.phone.trim()) errs.phone = "請輸入電話"
-        if(!shippingInfo.address.trim()) errs.address = "請輸入地址"
-        if(!shippingInfo.zip.trim()) errs.zip = "請輸入郵遞區號"
-
-
-         if(paymentMethod === "cc") {
-    const cardNumberOnly = creditCard.number.replace(/\s/g, '');
-    if (!cardNumberOnly || !/^\d{16}$/.test(cardNumberOnly)) {
-      errs.cardNumber = "請輸入有效的 16 位數信用卡號";
-    }
-    if (!creditCard.name.trim()) {
-      errs.cardName = "請輸入持卡人姓名";
-    }
-    if (!/^\d{2}\/\d{2}$/.test(creditCard.expiry)) {
-      errs.expiry = "請輸入有效的日期格式 MM/YY";
-    } else {
-      const [mm, yy] = creditCard.expiry.split('/').map(Number);
-      const currentDate = new Date();
-      const expiryDate = new Date(2000 + yy, mm -1, 1);
-      if (isNaN(expiryDate) || expiryDate < currentDate) {
-        errs.cardExpiry = "信用卡已過期，請輸入有效日期";
-      }
-    }
-    if (!/^\d{3}$/.test(creditCard.cvv)) {
-      errs.cardCVV = "請輸入 3 位數驗證碼";
-    }
-  }
-        setError(errs)
-            return Object.keys(errs).length === 0
-    }
 
     const handleOrder =  async () => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
+        if (!stripe || !elements) {
+            alert("Stripe 尚未初始化，請稍後再試");
+            setIsSubmitting(false);
+            return;
+        }
+
+
+        if (!validate()) {
+            alert("請填寫完整資訊");
+            setIsSubmitting(false);
+        return;
+        }
          const cartItems = cart.products;
          const stockIssues = cartItems.filter(cartItem => {
             const matchedProduct = allProducts.find(p => p.id === cartItem.id);
             return matchedProduct && cartItem.quantity > matchedProduct.quantity;
          })
 
+         
          if(stockIssues.length > 0){
             alert("以下商品的購買數量超過庫存:\n" +
                 stockIssues.map(item =>{
@@ -133,89 +112,81 @@ const Checkout = ({setOrder}) => {
                     return `「${item.name}」購買 ${item.quantity} 件，庫存僅剩 ${stock} 件`;
                 }).join("\n")
              );
+             setIsSubmitting(false);
              return;
          }
-
-         if (isSubmitting) return;
-            setIsSubmitting(true);
-        let valid = true ;
-        let errors = {} ;
-
-        if (paymentMethod === "cc") {
-    // 信用卡號：16位數字
-    const cardNumberOnly = creditCard.number.replace(/\s/g, '');
-    if (!cardNumberOnly || !/^\d{16}$/.test(cardNumberOnly)) {
-      errors.number = "請輸入有效的 16 位數信用卡號";
-      valid = false;
-    }
-
-    // 姓名：不可空白
-    if (!creditCard.name.trim()) {
-      errors.name = "請輸入持卡人姓名";
-      valid = false;
-    }
-
-    // 有效日期：格式 MM/YY 且非過去時間
-    if (!/^\d{2}\/\d{2}$/.test(creditCard.expiry)) {
-      errors.expiry = "請輸入有效的日期格式 MM/YY";
-      valid = false;
-    } else {
-      const [mm, yy] = creditCard.expiry.split('/').map(Number);
-      const currentDate = new Date();
-      const expiryDate = new Date(2000 + yy, mm -1,1); // 該月結束
-      if (isNaN(expiryDate) || expiryDate < currentDate) {
-        errors.expiry = "信用卡已過期，請輸入有效日期";
-        valid = false;
-      }
-    }
-
-    // CVV 驗證碼：3位數字
-    if (!/^\d{3}$/.test(creditCard.cvv)) {
-      errors.cvv = "請輸入 3 位數驗證碼";
-      valid = false;
-    }
-  }
-
-        setCreditCardError(errors);
-        setIsSubmitting(false);
-
-        if(!validateForm()) return 
-
         if(cart.products.length ===0){
             alert("購物車是空的，請先去添加商品")
+             setIsSubmitting(false);
             return
         }
 
-        const newOrder = {
-  order_number: Date.now().toString(),
-  billing_name: billingInfo.name,
-  billing_email: billingInfo.email,
-  billing_phone: billingInfo.phone,
-  shipping_address: shippingInfo.address,
-  shipping_zip: shippingInfo.zip,
-  payment_method: paymentMethod,
-  total_price: cart.totalPrice,
-  items: cart.products.map(p => ({
-    product_id: p.id,    // 確認你的 product id 欄位叫 id
-    product_name: p.name,
-    quantity: p.quantity,
-    price: p.price,
-    Seller_ID:p.Seller_ID
-  }))
-};
-        try {
-    const res = await axios.post('api/orders', newOrder, { withCredentials: true });
-    if (res.data.Status === "成功") {
-      console.log("訂單已新增，訂單ID：", res.data.orderId);
+
+
+       try {
+    // Step 1: 從後端建立 PaymentIntent 拿 clientSecret
+    const paymentRes = await axios.post('/create-payment-intent', 
+      { amount: Math.round(cart.totalPrice * 100) },  // 分為單位
+      { withCredentials: true }
+    );
+
+    const clientSecret = paymentRes.data.clientSecret;
+
+    // Step 2: 呼叫 Stripe 付款流程
+    const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+        billing_details: {
+          name: billingInfo.name,
+          email: billingInfo.email,
+          phone: billingInfo.phone,
+        },
+      },
+    });
+
+    if(paymentResult.error){
+      alert("付款失敗：" + paymentResult.error.message);
+      setIsSubmitting(false);
+      return;
+    }
+
+    if(paymentResult.paymentIntent.status !== "succeeded"){
+      alert("付款未成功");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Step 3: 付款成功，送訂單資料到後端
+    const newOrder = {
+      order_number: Date.now().toString(),
+      billing_name: billingInfo.name,
+      billing_email: billingInfo.email,
+      billing_phone: billingInfo.phone,
+      shipping_address: shippingInfo.address,
+      shipping_zip: shippingInfo.zip,
+      payment_method: paymentMethod,
+      total_price: cart.totalPrice,
+      items: cart.products.map(p => ({
+        product_id: p.id,
+        product_name: p.name,
+        quantity: p.quantity,
+        price: p.price,
+        Seller_ID: p.Seller_ID,
+      })),
+    };
+        const orderRes = await axios.post('api/orders', newOrder, { withCredentials: true });
+    if(orderRes.data.Status === "成功"){
       setOrder(newOrder);
       dispatch(setOrder1(newOrder));
       localStorage.setItem("latestOrder", JSON.stringify(newOrder));
       dispatch(clearCart());
       navigate('/order-confirmation');
+    } else {
+      alert("訂單建立失敗");
     }
+
   } catch (error) {
-    console.error("新增訂單失敗:", error.response?.data || error.message);
-    alert("新增訂單失敗：" + (error.response?.data?.error || error.message));
+    alert("錯誤：" + (error.response?.data?.error || error.message));
   } finally {
     setIsSubmitting(false);
   }
@@ -303,43 +274,17 @@ const Checkout = ({setOrder}) => {
                         </div>
                     
                     {paymentMethod === "cc" && (
-                        <div className='bg-gray-100 p-4 rounded-lg mb-4'>
-                            <h3 className='text-xl font-semibold mb-4'>信用卡資訊</h3>
-                            <div className='mb-4'>
-                                <label className='block text-gray-700 font-semibold mb-2'>信用卡號</label>
-                                <input type='text' placeholder="請輸入卡號" className='border p-2 w-full rounded' required
-                                    value={creditCard.number} onChange={handleCardNumberChange}
-                                />
-                                {creditCardError.number && <p className="text-red-500 text-sm">{creditCardError.number}</p>}
-                            </div>
-                            <div className='mb-4'>
-                                <label className='block text-gray-700 font-semibold mb-2'>持卡人姓名</label>
-                                <input type='text' placeholder="請輸入姓名" className='border p-2 w-full rounded' required
-                                    value={creditCard.name} onChange={(e) => setCreditCard({...creditCard, name: e.target.value})}
-                                />
-                                {creditCardError.name && <p className="text-red-500 text-sm">{creditCardError.name}</p>}
-                            </div>
-                            <div className='flex justify-between mb-4'>
-                                <div className='w-1/2 mr-2'>
-                                    <label className='block text-gray-700 font-semibold mb-2'>有效日期</label>
-                                    <input type='text' placeholder="MM/YY" className='border p-2 w-full rounded' required
-                                        value={creditCard.expiry} onChange={handleExpiryChange}
-                                    />
-                                    {creditCardError.expiry && <p className="text-red-500 text-sm">{creditCardError.expiry}</p>}
-                                </div>
-                                <div className='w-1/2 ml-2'>
-                                    <label className='block text-gray-700 font-semibold mb-2'>驗證碼</label>
-                                    <input type='text' placeholder="CVV" className='border p-2 w-full rounded' required
-                                        maxLength={3} value={creditCard.cvv} onChange={(e) => {// 限制只能輸入數字，且長度最多3
-                                        const val = e.target.value.replace(/\D/g, '').substring(0, 3);
-                                        setCreditCard({...creditCard, cvv: val});
-                                    }}
-                                    />
-                                        {creditCardError.cvv && <p className="text-red-500 text-sm">{creditCardError.cvv}</p>}
-                                </div>
-                            </div>
+                        <div className='bg-gray-100 p-4 rounded-lg mt-4'>
+                            <CardElement options={CARD_ELEMENT_OPTIONS} />
                         </div>
-                    ) }
+                    )}
+
+                    {paymentMethod === "cod" && (
+                        <div className='mt-4'>
+                            <p>貨到付款請準備現金</p>
+                        </div>
+                    )}
+
                     </div>
                 </div>
           </div>

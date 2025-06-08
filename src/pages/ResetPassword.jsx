@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from '../../src/axios'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const ResetPassword = () => {
   const [email, setEmail] = useState('')
@@ -10,6 +10,13 @@ const ResetPassword = () => {
   const [error, setError] = useState('')
   const [codeError, setCodeError] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+
+   useEffect(() => {
+    if (location.state?.email) {
+      setEmail(location.state.email)
+    }
+   }, [location.state])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -51,10 +58,11 @@ const ResetPassword = () => {
     <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
       <h2 className="text-2xl font-bold mb-4">重設密碼</h2>
       <form onSubmit={handleSubmit}>
-        <label className="block mb-2 font-semibold">註冊信箱</label>
+        <label className="block mb-2 font-semibold">信箱</label>
         <input
           type="email"
           required
+          readOnly
           className="w-full p-2 mb-4 border rounded"
           placeholder="Email"
           value={email}

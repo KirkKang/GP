@@ -18,7 +18,7 @@ const ForgotPassword = () => {
       if (res.data.Status === '驗證碼已寄出') {
         setMessage('驗證碼已寄出，請至信箱查收')
          setTimeout(() => {
-            navigate('/reset-password')
+            navigate('/reset-password',{state:{email}})
         }, 2000)
       } else {
         setError(res.data.Error || '寄送驗證碼失敗')
