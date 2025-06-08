@@ -119,7 +119,7 @@ useEffect(() => {
         <Route path="/userorderinfo" element={<UserOrderInformation/>}></Route>
         </Route>
 
-        <Route path="/filter-data" element={<FilterData/>}></Route>
+        <Route path="/filter-data/:keyword" element={<FilterData/>}></Route>
         <Route path="/product/:id" element={<ProductDetail/>}></Route>
         <Route path="/seller/:id" element={<SellerData />} />
 
