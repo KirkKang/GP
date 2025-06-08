@@ -69,9 +69,9 @@ const ProductCard = ({ product }) => {
       <div className='bg-white p-4 shadow rounded relative border transform transition-transform duration-300 hover:scale-105'>
 
         {/* 折扣標籤 */}
-        {displayProduct.Discount > 0 && (
+        {displayProduct.discount > 0 && (
           <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
-            -{displayProduct.Discount}%
+            -{displayProduct.discount}%
           </div>
         )}
 
@@ -79,7 +79,7 @@ const ProductCard = ({ product }) => {
         <h3 className='text-lg font-semibold'>{displayProduct.name}</h3>
 
         {/* 價格顯示 */}
-        {displayProduct.Discount > 0 ? (
+        {displayProduct.discount > 0 ? (
           <div className="text-gray-500">
             <p className="line-through text-sm text-red-400">${displayProduct.price}</p>
             <p className="text-green-600 font-bold text-lg">${discountedPrice}</p>
