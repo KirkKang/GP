@@ -126,6 +126,13 @@ const Checkout = ({setOrder}) => {
             return
         }
 
+        const cardNumberElement = elements.getElement(CardNumberElement);
+        if (!cardNumberElement) {
+            alert("請輸入信用卡資訊");
+            setIsSubmitting(false);
+        return;
+        }
+
 
 
        try {
@@ -137,10 +144,12 @@ const Checkout = ({setOrder}) => {
 
     const clientSecret = paymentRes.data.clientSecret;
 
+    
+
     // Step 2: 呼叫 Stripe 付款流程
     const paymentResult = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: elements.getElement(CardElement),
+        card: cardNumberElement,
         billing_details: {
           name: billingInfo.name,
           email: billingInfo.email,
@@ -179,7 +188,7 @@ const Checkout = ({setOrder}) => {
         Seller_ID: p.Seller_ID,
       })),
     };
-        const orderRes = await axios.post('api/orders', newOrder, { withCredentials: true });
+        const orderRes = await axios.post('/api/orders', newOrder, { withCredentials: true });
     if(orderRes.data.Status === "成功"){
       setOrder(newOrder);
       dispatch(setOrder1(newOrder));
