@@ -12,7 +12,7 @@ const FilterData = () => {
   useEffect(() => {
     if (keyword && allProducts.length > 0) {
       const result = allProducts.filter((product) =>
-        product.Bookname.toLowerCase().includes(keyword.toLowerCase())
+        product.name.toLowerCase().includes(keyword.toLowerCase())
       );
       setMatchedProducts(result);
     }
