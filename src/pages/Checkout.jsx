@@ -127,7 +127,7 @@ const Checkout = ({setOrder}) => {
         }
 
         const cardNumberElement = elements.getElement(CardNumberElement);
-        if (!cardNumberElement) {
+        if (!cardNumberElement && paymentMethod === "cc") {
             alert("請輸入信用卡資訊");
             setIsSubmitting(false);
         return;
