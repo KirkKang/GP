@@ -18,7 +18,7 @@ const ProductCard = ({ product }) => {
     Shelf_status: (product.quantity === 0 && product.Shelf_status !== 0) ? 2 : product.Shelf_status
   }
 
-  const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) * 100) / 100
+  const discountedPrice = Number(Math.round(product.price * (1 - product.Discount / 100) * 100) / 100)
 
   const handleAddToCart = (e, product) => {
     e.stopPropagation()
