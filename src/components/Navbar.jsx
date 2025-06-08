@@ -217,6 +217,9 @@ useEffect(() => {
             <Link to='/shop' className='hover:underline'>
                 商品
             </Link>
+            <Link to='https://product-alhs.onrender.com/login.php' target='_blank' rel='noopener noreferrer' className='hover:underline'>
+              註冊成為賣家
+            </Link>
             {/* <Link to='/contact' className='hover:underline'>
                 聯繫
             </Link>
