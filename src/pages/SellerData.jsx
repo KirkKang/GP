@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import ProductCard from '../components/ProductCard'
 import NoProduct from '../assets/Images/noproduct.png'
 import { setSellerProducts } from '../redux/productSlice'
-
 const SellerData = () => {
     const { id } = useParams(); // Seller_ID
     const dispatch = useDispatch();
@@ -15,10 +14,10 @@ const SellerData = () => {
     const sellerInfo = sellers?.length ? sellers.find(seller => seller.Seller_ID === id) : null;
 
     useEffect(() => {
-        if(setProducts.length > 0){
+        if(products.length > 0){
         dispatch(setSellerProducts(id));
         }
-    }, [dispatch, id]);
+    }, [dispatch, id, products]);
 
     return (
          <div className='mx-auto py-12 px-4 md:px-16 lg:px-24'>
