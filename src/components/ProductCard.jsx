@@ -18,7 +18,7 @@ const ProductCard = ({ product }) => {
     Shelf_status: (product.quantity === 0 && product.Shelf_status !== 0) ? 2 : product.Shelf_status
   }
 
-  const discountedPrice = (displayProduct.price * (1 - displayProduct.Discount / 100)).toFixed(2)
+  const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) * 100) / 100
 
   const handleAddToCart = (e, product) => {
     e.stopPropagation()
@@ -32,18 +32,24 @@ const ProductCard = ({ product }) => {
       return
     }
 
-    dispatch(addToCart(product))
+    const productForCartRedux = {
+  ...product,
+  price: discountedPrice,
+}
+
+    dispatch(addToCart(productForCartRedux))
     alert("商品加入成功")
 
     if (isAuthenticated) {
       const productForCart = {
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: discountedPrice,
         image: product.image,
         quantity: 1,
         Seller_ID: product.Seller_ID,
         Sell_quantity: product.Sell_quantity,
+        Discount: product.Discount,
       }
 
       axios.post('api/add-cart', { product: productForCart }, { withCredentials: true })

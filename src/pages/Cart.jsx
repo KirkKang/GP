@@ -52,7 +52,7 @@ const Cart = ({openSignUp}) => {
                           <div className='flex items-center justify-center border'>
                               <button className='text-xl font-bold px-1.5 border-r' onClick={()=>{ 
                                   if(isAuthenticated){
-                                  axios.post('http://localhost:3001/api/sub-cart',{product: {...product,quantity:-1}},{withCredentials:true})
+                                  axios.post('/api/sub-cart',{product: {...product,quantity:-1}},{withCredentials:true})
                                   .then(res=>{
                                   if(res.data.Status ==="成功"){
                                     console.log("購物車更新成功",res.data);
@@ -86,7 +86,7 @@ const Cart = ({openSignUp}) => {
                                     }
 
                                 if(isAuthenticated){
-                                  axios.post('api/add-cart',{product: {...product,quantity:1}},{withCredentials:true})
+                                  axios.post('/api/add-cart',{product: {...product,quantity:1}},{withCredentials:true})
                                   .then(res=>{
                                   if(res.data.Status ==="成功"){
                                     console.log("購物車更新成功",res.data);
@@ -111,7 +111,7 @@ const Cart = ({openSignUp}) => {
                           <button className='text-red-500 hover:text-red-700'
                               onClick={()=>{
                               if(isAuthenticated){
-                                axios.delete(`api/remove-cart/${product.id}`, { withCredentials: true })
+                                axios.delete(`/api/remove-cart/${product.id}`, { withCredentials: true })
                                 .then(res=>{
                                   if(res.data.Status==="成功"){
                                      console.log("商品刪除成功", res.data);

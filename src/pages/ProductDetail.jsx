@@ -39,6 +39,8 @@ const ProductDetail = () => {
     const existingQty = currentCartItem ? currentCartItem.quantity : 0
     const requestedQty = parseInt(quantity)
     const totalQty = existingQty + requestedQty
+    const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) * 100) / 100
+
 
     if (totalQty > product.quantity) {
       alert(`庫存不足，您已選擇 ${existingQty} 件，最多只能再加 ${product.quantity - existingQty} 件。`)
@@ -47,6 +49,7 @@ const ProductDetail = () => {
 
     const newItem = {
       ...product,
+      price: discountedPrice,
       quantity: requestedQty
     }
 
@@ -74,7 +77,7 @@ const ProductDetail = () => {
   }
 
   const isDisabled = product.Shelf_status === 2 || product.quantity === 0
-  const discountedPrice = (product.price * (1 - product.Discount / 100)).toFixed(2)
+  const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) * 100) / 100
 
   return (
     <div className='container mx-auto py-8 px-4 md:px-16 lg:px-24'>
