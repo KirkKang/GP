@@ -10,7 +10,7 @@ import Order from "./pages/Order"
 import FilterData from "./pages/FilterData"
 import ProductDetail from "./pages/ProductDetail"
 import { useDispatch, useSelector } from "react-redux"
-import { setProducts, setSellers } from "./redux/productSlice"
+import { setProducts, setSearchTerm, setSellers } from "./redux/productSlice"
 import { mockData } from "./assets/mockData"
 // import axios  from "axios"
 import RequireAuth from "./components/RequireAuth"
@@ -81,6 +81,7 @@ console.log("App 檢查 auth 狀態：", authState);
     .then(([productRes, sellerRes]) => {
       dispatch(setProducts(productRes.data));
       dispatch(setSellers(sellerRes.data));
+      dispatch(setSearchTerm(''));
     })
     .catch(err => {
       console.error("載入商品或賣家資料失敗", err);
