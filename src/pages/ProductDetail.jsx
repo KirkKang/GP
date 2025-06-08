@@ -39,7 +39,7 @@ const ProductDetail = () => {
     const existingQty = currentCartItem ? currentCartItem.quantity : 0
     const requestedQty = parseInt(quantity)
     const totalQty = existingQty + requestedQty
-    const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) * 100) / 100
+    const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) )
 
 
     if (totalQty > product.quantity) {
@@ -77,8 +77,7 @@ const ProductDetail = () => {
   }
 
   const isDisabled = product.Shelf_status === 2 || product.quantity === 0
-  const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) * 100) / 100
-
+    const discountedPrice = Math.round(product.price * (1 - product.Discount / 100) )
   return (
     <div className='container mx-auto py-8 px-4 md:px-16 lg:px-24'>
       <div className='flex flex-col md:flex-row gap-x-16'>
