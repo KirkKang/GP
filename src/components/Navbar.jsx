@@ -12,11 +12,12 @@ import { clearCart } from '../redux/cartSlice'
 const Navbar = () => {
     const [isModelOpen, setIsModelOpen] = useState(false)
     const [isLogin, setIsLogin] = useState(true)
-    const [search, setSearch] = useState()
+    const [search, setSearch] = useState('')
 
    const [showUser, setShowUser] = useState(false)
+   const [showUserMobile, setShowUserMobile] = useState(false);
    const dropShowUserRef = useRef(null);
-
+   const dropShowUserMobileRef = useRef(null); 
     const {isAuthenticated, user} = useSelector(state => state.auth)
     const location = useLocation();
     useEffect(()=>{
@@ -44,6 +45,19 @@ const Navbar = () => {
   function handleClickOutside(event) {
     if (dropShowUserRef.current && !dropShowUserRef.current.contains(event.target)) {
       setShowUser(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (dropShowUserMobileRef.current && !dropShowUserMobileRef.current.contains(event.target)) {
+      setShowUserMobile(false);
     }
   }
 
@@ -139,17 +153,17 @@ const Navbar = () => {
                     }                   
               </div>
             )}
-                <div className="relative block md:hidden" ref={dropShowUserRef}>
-  <button onClick={() => setShowUser(prev => !prev)} className="text-lg">
+                <div className="relative block md:hidden" ref={dropShowUserMobileRef}>
+  <button onClick={() => setShowUserMobile(prev => !prev)} className="text-lg">
     <FaUser />
   </button>
-  {showUser && (
+  {showUserMobile && (
     <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-md p-3 z-50 text-sm space-y-2">
       {!isAuthenticated ? (
         <>
           <button
             onClick={() => {
-              setShowUser(false);
+              setShowUserMobile(false);
               setIsModelOpen(true); // 顯示登入註冊 modal
             }}
             className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
@@ -162,7 +176,7 @@ const Navbar = () => {
           <p className="text-gray-700 border-b pb-2">{user.name + "會員"}</p>
           <button
             onClick={() => {
-              setShowUser(false);
+              setShowUserMobile(false);
               navigate('/userinfo');
             }}
             className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
@@ -171,7 +185,7 @@ const Navbar = () => {
           </button>
           <button
             onClick={() => {
-              setShowUser(false);
+              setShowUserMobile(false);
               navigate('/userorderinfo');
             }}
             className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded"
@@ -180,7 +194,7 @@ const Navbar = () => {
           </button>
           <button
             onClick={() => {
-              setShowUser(false);
+              setShowUserMobile(false);
               handleLogout();
             }}
             className="w-full text-left text-red-500 hover:bg-gray-100 px-2 py-1 rounded"
