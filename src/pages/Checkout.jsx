@@ -19,6 +19,7 @@ const CARD_ELEMENT_OPTIONS = {
       color: '#9e2146',
     },
   },
+  hidePostalCode: true,
 };
 
 
