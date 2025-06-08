@@ -136,69 +136,89 @@ const Checkout = ({setOrder}) => {
 
 
        try {
-    // Step 1: 從後端建立 PaymentIntent 拿 clientSecret
-    const paymentRes = await axios.post('/create-payment-intent', 
-      { amount: Math.round(cart.totalPrice * 100) },  // 分為單位
-      { withCredentials: true }
-    );
+    let paymentSucceeded = true; // 預設貨到付款也算成功
 
-    const clientSecret = paymentRes.data.clientSecret;
+    if (paymentMethod === "cc") {
+      if (!stripe || !elements) {
+        alert("Stripe 尚未初始化，請稍後再試");
+        setIsSubmitting(false);
+        return;
+      }
 
-    
+      const cardNumberElement = elements.getElement(CardNumberElement);
+      if (!cardNumberElement) {
+        alert("請輸入信用卡資訊");
+        setIsSubmitting(false);
+        return;
+      }
 
-    // Step 2: 呼叫 Stripe 付款流程
-    const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: cardNumberElement,
-        billing_details: {
-          name: billingInfo.name,
-          email: billingInfo.email,
-          phone: billingInfo.phone,
+      // Step 1: 從後端建立 PaymentIntent 拿 clientSecret
+      const paymentRes = await axios.post('/create-payment-intent',
+        { amount: Math.round(cart.totalPrice * 100) },  // 分為分單位
+        { withCredentials: true }
+      );
+
+      const clientSecret = paymentRes.data.clientSecret;
+
+      // Step 2: 呼叫 Stripe 付款流程
+      const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardNumberElement,
+          billing_details: {
+            name: billingInfo.name,
+            email: billingInfo.email,
+            phone: billingInfo.phone,
+          },
         },
-      },
-    });
+      });
 
-    if(paymentResult.error){
-      alert("付款失敗：" + paymentResult.error.message);
-      setIsSubmitting(false);
-      return;
+      if (paymentResult.error) {
+        alert("付款失敗：" + paymentResult.error.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (paymentResult.paymentIntent.status !== "succeeded") {
+        alert("付款未成功");
+        setIsSubmitting(false);
+        return;
+      }
+    } else if (paymentMethod === "cod") {
+      // 貨到付款不須Stripe付款，直接通過
+      paymentSucceeded = true;
     }
 
-    if(paymentResult.paymentIntent.status !== "succeeded"){
-      alert("付款未成功");
-      setIsSubmitting(false);
-      return;
-    }
+    if (paymentSucceeded) {
+      // Step 3: 付款成功，送訂單資料到後端
+      const newOrder = {
+        order_number: Date.now().toString(),
+        billing_name: billingInfo.name,
+        billing_email: billingInfo.email,
+        billing_phone: billingInfo.phone,
+        shipping_address: shippingInfo.address,
+        shipping_zip: shippingInfo.zip,
+        payment_method: paymentMethod,
+        total_price: cart.totalPrice,
+        items: cart.products.map(p => ({
+          product_id: p.id,
+          product_name: p.name,
+          quantity: p.quantity,
+          price: p.price,
+          Seller_ID: p.Seller_ID,
+        })),
+      };
 
-    // Step 3: 付款成功，送訂單資料到後端
-    const newOrder = {
-      order_number: Date.now().toString(),
-      billing_name: billingInfo.name,
-      billing_email: billingInfo.email,
-      billing_phone: billingInfo.phone,
-      shipping_address: shippingInfo.address,
-      shipping_zip: shippingInfo.zip,
-      payment_method: paymentMethod,
-      total_price: cart.totalPrice,
-      items: cart.products.map(p => ({
-        product_id: p.id,
-        product_name: p.name,
-        quantity: p.quantity,
-        price: p.price,
-        Seller_ID: p.Seller_ID,
-      })),
-    };
-        const orderRes = await axios.post('/api/orders', newOrder, { withCredentials: true });
-    if(orderRes.data.Status === "成功"){
-      setOrder(newOrder);
-      dispatch(setOrder1(newOrder));
-      localStorage.setItem("latestOrder", JSON.stringify(newOrder));
-      dispatch(clearCart());
-      navigate('/order-confirmation');
-    } else {
-      alert("訂單建立失敗");
+      const orderRes = await axios.post('/api/orders', newOrder, { withCredentials: true });
+      if (orderRes.data.Status === "成功") {
+        setOrder(newOrder);
+        dispatch(setOrder1(newOrder));
+        localStorage.setItem("latestOrder", JSON.stringify(newOrder));
+        dispatch(clearCart());
+        navigate('/order-confirmation');
+      } else {
+        alert("訂單建立失敗");
+      }
     }
-
   } catch (error) {
     alert("錯誤：" + (error.response?.data?.error || error.message));
   } finally {
