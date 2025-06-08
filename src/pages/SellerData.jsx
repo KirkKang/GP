@@ -8,12 +8,16 @@ import { setSellerProducts } from '../redux/productSlice'
 const SellerData = () => {
     const { id } = useParams(); // Seller_ID
     const dispatch = useDispatch();
+
+    const products = useSelector(state => state.product.products);
     const sellerProducts = useSelector(state => state.product.sellerProducts);
     const sellers = useSelector(state => state.product.sellers);
     const sellerInfo = sellers?.length ? sellers.find(seller => seller.Seller_ID === id) : null;
 
     useEffect(() => {
+        if(setProducts.length > 0){
         dispatch(setSellerProducts(id));
+        }
     }, [dispatch, id]);
 
     return (

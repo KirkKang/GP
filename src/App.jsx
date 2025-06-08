@@ -37,20 +37,20 @@ console.log("App 檢查 auth 狀態：", authState);
   // },[dispatch])
 
 
-  useEffect(()=>{
-    dispatch (setLoading(true));
-    const fetchProducts = async () => {
-      try {
-          const res = await axios.get("api/products")
-          dispatch(setProducts(res.data))
-          console.log(res.data)
-      }
-      catch(error){
-        console.log("fail",error)
-      }
-    };
-    fetchProducts()
-  },[dispatch])
+  // useEffect(()=>{
+  //   dispatch (setLoading(true));
+  //   const fetchProducts = async () => {
+  //     try {
+  //         const res = await axios.get("api/products")
+  //         dispatch(setProducts(res.data))
+  //         console.log(res.data)
+  //     }
+  //     catch(error){
+  //       console.log("fail",error)
+  //     }
+  //   };
+  //   fetchProducts()
+  // },[dispatch])
 
    
 
@@ -65,13 +65,31 @@ console.log("App 檢查 auth 狀態：", authState);
   }, [dispatch])
 
 
-  useEffect(() => {
-  axios.get('/api/sellers')
-    .then(res => {
-      dispatch(setSellers(res.data));
+//   useEffect(() => {
+//   axios.get('/api/sellers')
+//     .then(res => {
+//       dispatch(setSellers(res.data));
+//     })
+//     .catch(err => console.error('取得賣家資料失敗', err));
+// }, []);
+    useEffect(() => {
+  dispatch(setLoading(true));
+  Promise.all([
+    axios.get("api/products"),
+    axios.get("/api/sellers")
+  ])
+    .then(([productRes, sellerRes]) => {
+      dispatch(setProducts(productRes.data));
+      dispatch(setSellers(sellerRes.data));
     })
-    .catch(err => console.error('取得賣家資料失敗', err));
-}, []);
+    .catch(err => {
+      console.error("載入商品或賣家資料失敗", err);
+    })
+    .finally(() => {
+      dispatch(setLoading(false));
+    });
+}, [dispatch]);
+
 
   
 

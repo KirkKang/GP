@@ -33,6 +33,7 @@ const productSlice = createSlice({
             state.sellers = action.payload; 
         }
         
+        
     },
         
 })
