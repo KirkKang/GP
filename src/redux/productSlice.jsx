@@ -5,6 +5,7 @@ const initialState ={
     searchTerm: '',
     filteredData: [],
     sellerProducts: [],
+    sellers: [],
 }
 
 const productSlice = createSlice({
@@ -27,11 +28,14 @@ const productSlice = createSlice({
                 product.Seller_ID === sellerId &&
                 product.Shelf_status !== 0
             )
+        },
+        setSellers(state, action) {
+            state.sellers = action.payload; 
         }
         
     },
         
 })
 
-export const {setProducts,setSearchTerm,setSellerProducts} = productSlice.actions;
+export const {setProducts,setSearchTerm,setSellerProducts,setSellers} = productSlice.actions;
 export default productSlice.reducer

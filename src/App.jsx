@@ -10,7 +10,7 @@ import Order from "./pages/Order"
 import FilterData from "./pages/FilterData"
 import ProductDetail from "./pages/ProductDetail"
 import { useDispatch, useSelector } from "react-redux"
-import { setProducts } from "./redux/productSlice"
+import { setProducts, setSellers } from "./redux/productSlice"
 import { mockData } from "./assets/mockData"
 // import axios  from "axios"
 import RequireAuth from "./components/RequireAuth"
@@ -63,6 +63,15 @@ console.log("App 檢查 auth 狀態：", authState);
       })
       .catch(err => console.log("登入狀態檢查失敗", err))
   }, [dispatch])
+
+
+  useEffect(() => {
+  axios.get('/api/sellers')
+    .then(res => {
+      dispatch(setSellers(res.data));
+    })
+    .catch(err => console.error('取得賣家資料失敗', err));
+}, []);
 
   
 
