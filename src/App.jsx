@@ -32,6 +32,10 @@ console.log("App 檢查 auth 狀態：", authState);
 
   const [order, setOrder] = useState(null)
 
+  const searchTerm = useSelector(state => state.product.searchTerm);
+    useEffect(() => {
+      localStorage.setItem('searchTerm', searchTerm);
+    }, [searchTerm]);
   // useEffect(()=>{
   //   dispatch((setProducts(mockData)))
   // },[dispatch])
@@ -81,7 +85,7 @@ console.log("App 檢查 auth 狀態：", authState);
     .then(([productRes, sellerRes]) => {
       dispatch(setProducts(productRes.data));
       dispatch(setSellers(sellerRes.data));
-      dispatch(setSearchTerm(''));
+      dispatch(setSearchTerm(savedSearchTerm));
     })
     .catch(err => {
       console.error("載入商品或賣家資料失敗", err);
