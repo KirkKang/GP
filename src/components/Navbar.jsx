@@ -129,7 +129,7 @@ useEffect(() => {
                     登入 | 註冊
                 </button>
                     ) :(
-              <div className="relative" ref={dropShowUserRef}>
+              <div className="relative hidden md:block" ref={dropShowUserRef}>
                     <button onClick={() => setShowUser(prev => !prev)} className="text-lg mt-2 ml-2">
                     <FaUser />
                     </button>    
