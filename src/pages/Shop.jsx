@@ -45,7 +45,7 @@ const Shop = () => {
     .filter(product => product.Shelf_status !== 0)
     .filter(product => !selectedCategory || product.Type === selectedCategory)
     .filter(product =>
-    product.Product_name.toLowerCase().includes(searchTerm)
+    product?.Product_name?.toLowerCase().includes(searchTerm)
   );
   return (
       <div className='mx-auto py-12 px-4 md:px-16 lg:px-24'>
