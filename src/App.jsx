@@ -26,16 +26,15 @@ import ResetPassword from "./pages/ResetPassword"
 import ResetPass from "./pages/ResetPass"
 // import ProductList from "./ProductList"
 function App() {
-  const authState = useSelector(state => state.auth);
+const authState = useSelector(state => state.auth);
+const searchTerm = useSelector(state => state.product.searchTerm);
 console.log("App 檢查 auth 狀態：", authState);
   const dispatch = useDispatch()
 
   const [order, setOrder] = useState(null)
 
-  const searchTerm = useSelector(state => state.product.searchTerm);
-    useEffect(() => {
-      localStorage.setItem('searchTerm', searchTerm);
-    }, [searchTerm]);
+  
+    
   // useEffect(()=>{
   //   dispatch((setProducts(mockData)))
   // },[dispatch])
@@ -78,6 +77,7 @@ console.log("App 檢查 auth 狀態：", authState);
 // }, []);
     useEffect(() => {
   dispatch(setLoading(true));
+   const savedSearchTerm = localStorage.getItem('searchTerm') || '';
   Promise.all([
     axios.get("api/products"),
     axios.get("/api/sellers")
@@ -95,6 +95,10 @@ console.log("App 檢查 auth 狀態：", authState);
     });
 }, [dispatch]);
 
+
+useEffect(() => {
+  localStorage.setItem('searchTerm', searchTerm);
+}, [searchTerm]);
 
   
 
