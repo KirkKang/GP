@@ -59,7 +59,7 @@ const Navbar = () => {
     const handleSearch = (e) => {
         e.preventDefault()
         dispatch(setSearchTerm(search))
-        navigate('/filter-data')
+        navigate(`/filter-data/${search}`)
     }
 
     const openSignUp = () => {
