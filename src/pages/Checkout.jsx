@@ -5,15 +5,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { clearCart } from '../redux/cartSlice'
 import { setOrder1 } from '../redux/orderSlice'
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js"
-const CARD_ELEMENT_OPTIONS = {
+import { CardCvcElement, CardElement, CardExpiryElement, CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js"
+
+const CARD_INPUT_STYLE = {
   style: {
     base: {
       fontSize: '16px',
       color: '#424770',
-      '::placeholder': {
-        color: '#aab7c4',
-      },
+      '::placeholder': { color: '#aab7c4' },
+      padding: '12px 14px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      backgroundColor: 'white',
+      height: '45px',
     },
     invalid: {
       color: '#9e2146',
@@ -275,9 +279,22 @@ const Checkout = ({setOrder}) => {
                         </div>
                     
                     {paymentMethod === "cc" && (
-                        <div className='bg-gray-100 p-4 rounded-lg mt-4'>
-                            <CardElement options={CARD_ELEMENT_OPTIONS} />
-                        </div>
+                        <div className="flex flex-col space-y-4">
+      <label>信用卡號</label>
+      <div className="border rounded">
+        <CardNumberElement options={CARD_INPUT_STYLE} />
+      </div>
+
+      <label>有效期限</label>
+      <div className="border rounded">
+        <CardExpiryElement options={CARD_INPUT_STYLE} />
+      </div>
+
+      <label>CVC</label>
+      <div className="border rounded">
+        <CardCvcElement options={CARD_INPUT_STYLE} />
+      </div>
+    </div>
                     )}
 
                     {paymentMethod === "cod" && (
