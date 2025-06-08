@@ -15,8 +15,8 @@ const InfoSection = () => {
     },
     {
       icon: <FaMoneyBillWave className='text-3xl text-red-600'/>,
-      title: '全額退費',
-      description: '七天鑑賞期，無條件退費'
+      title: '到貨極快',
+      description: '最快兩天內抵達，最慢七天抵達'
     },
     {
       icon: <FaLock className='text-3xl text-red-600'/>,
