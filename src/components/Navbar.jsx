@@ -94,6 +94,7 @@ useEffect(() => {
             dispatch(clearAuth());
             dispatch(clearCart());
             setShowUser(false);
+            setShowUserMobile(false);
             navigate('/');
         }).catch(err => console.log(err));
     }
