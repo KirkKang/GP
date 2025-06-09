@@ -86,8 +86,7 @@ useEffect(() => {
         setIsModelOpen(true)
     }
 
-    const handleLogout = (e) => {
-        e.preventDefault();
+    const handleLogout = () => {
         axios.get('api/logout',{
             withCredentials:true
         })
@@ -193,9 +192,9 @@ useEffect(() => {
             訂單資訊
           </button>
           <button
-            onClick={(e) => {
+            onClick={() => {
               setShowUserMobile(false);
-              handleLogout(e);
+              handleLogout();
             }}
             className="w-full text-left text-red-500 hover:bg-gray-100 px-2 py-1 rounded"
           >
