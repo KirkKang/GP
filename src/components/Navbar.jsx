@@ -193,9 +193,9 @@ useEffect(() => {
             訂單資訊
           </button>
           <button
-            onClick={() => {
+            onClick={(e) => {
               setShowUserMobile(false);
-              handleLogout();
+              handleLogout(e);
             }}
             className="w-full text-left text-red-500 hover:bg-gray-100 px-2 py-1 rounded"
           >
