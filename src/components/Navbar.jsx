@@ -195,7 +195,7 @@ useEffect(() => {
           <button
             onClick={() => {
               setShowUserMobile(false);
-              onClick={handleLogout}
+              handleLogout();
             }}
             className="w-full text-left text-red-500 hover:bg-gray-100 px-2 py-1 rounded"
           >
