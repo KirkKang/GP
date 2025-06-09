@@ -42,28 +42,28 @@ const Navbar = () => {
 
 
     useEffect(() => {
-  function handleClickOutside(event) {
+  function handleClickOutsideDesktop(event) {
     if (dropShowUserRef.current && !dropShowUserRef.current.contains(event.target)) {
       setShowUser(false);
     }
   }
 
-  document.addEventListener("mousedown", handleClickOutside);
+  document.addEventListener("mousedown", handleClickOutsideDesktop);
   return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
+    document.removeEventListener("mousedown", handleClickOutsideDesktop);
   };
 }, []);
 
 useEffect(() => {
-  function handleClickOutside(event) {
+  function handleClickOutsideMobile(event) {
     if (dropShowUserMobileRef.current && !dropShowUserMobileRef.current.contains(event.target)) {
       setShowUserMobile(false);
     }
   }
 
-  document.addEventListener("mousedown", handleClickOutside);
+  document.addEventListener("mousedown", handleClickOutsideMobile);
   return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
+    document.removeEventListener("mousedown", handleClickOutsideMobile);
   };
 }, []);
 
@@ -194,7 +194,7 @@ useEffect(() => {
           </button>
           <button
             onClick={() => {
-              setShowUserMobile(false);
+              // setShowUserMobile(false);
               handleLogout();
             }}
             className="w-full text-left text-red-500 hover:bg-gray-100 px-2 py-1 rounded"
